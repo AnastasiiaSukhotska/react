@@ -8,11 +8,10 @@ class LearningGroup {
     passedLessons = [];
 
     doneLesson(title, topics) {
-        for ( i = 0; i < passedLessons.length; i++){
-            if ( passedLessons[i].topics == topics && passedLessons[i].title == title ) {
-                continue;
-            }
-            this.passedLessons = this.passedLessons.push(new Lesson(title, topics));
+        let passedLesson = this.passedLessons.find(lesson => lesson.title == title && lesson.topics == topics);
+        if (passedLesson == undefined ){
+            this.passedLessons = this.passedLessons.push(new Lesson(title, topics))
         }
+        return this.passedLessons;
     }
 }

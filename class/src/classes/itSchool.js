@@ -10,48 +10,40 @@ class ITSchool{
     startedGroups = [];
 
     registerCourse(courseName, totalLessons, availableTeachersAmount) {
-        for (i=0; i<this.availableCourses.length; i++){
-            if(courseName == this.availableCourses[i].courseName){
-                continue;
-            }
+        let existedCourse = this.availableCourses.find(course =>course.courseName === courseName);
+        if (existedCourse === undefined) {
             this.availableCourses = this.availableCourses.push(new Course (courseName, totalLessons, availableTeachersAmount));
         }
-
+        return this.availableCourses;
     }
 
 
     startLearningGroup(courseName, teacherName, amountOfStudents) {
-
-        for ( i = 0; i < this.availableCourses.length; i++){
-            if ( this.availableCourses[i].courseName === courseName && this.availableCourses[i].availableTeachersAmount !=0) {
-                this.availableCourses[i].availableTeachersAmount = this.availableCourses[i].availableTeachersAmount - 1;
-               this.startedGroups = this.startedGroups.push(new LearningGroup (courseName, teacherName, amountOfStudents));          
-            }
+        let existedCourse = this.availableCourses.find(course =>course.courseName === courseName);
+        if (existedCourse !== undefined && existedCourse.availableTeachersAmount>0 ) {
+            this.startedGroups = this.startedGroups.push(new LearningGroup (courseName, teacherName, amountOfStudents));   
+            existedCourse.availableTeachersAmount = existedCourse.availableTeachersAmount - 1;
+    
         }
+        return this.startedGroups;
     }
 
     endLearningGroup(courseName, teacherName) {
-    for ( i = 0; i < this.startedGroups.length; i++ ) {
-        if ( this.startedGroups[i].courseName == courseName && this.startedGroups[i].teacherName == teacherName) {
-            this.startedGroups = this.startedGroups.slice(i, 1);
-            for ( i=0; i < this.availableCourses.length; i++) {
-                if ( this.availableCourses.courseName == courseName){
-                    this.availableCourses[i].availableTeachersAmount = this.availableCourses[i].availableTeachersAmount + 1;
-                }
-            }
+        let finishedGroupIndex = this.startedGroups.findIndex(group => group.courseName == courseName && group.teacherName == teacherName);
+        if ( finishedGroupIndex >= 0 ) {
+            this.startedGroups.splice(finishedGroupIndex, 1);
+            let existedCourse = this.availableCourses.find(course =>course.courseName === courseName);
+            existedCourse.availableTeachersAmount = existedCourse.availableTeachersAmount + 1;
+
         }
-      }
+        return this.startedGroups;
+
     }
 
     getLearningGroupByCourseName(courseName) {
-    let learningGroups = [];
-    for ( i = 0; i < this.startedGroups.length; i++) { 
-        if ( this.startedGroups[i].courseName === courseName){
-            learningGroups = learningGroups.push(this.startedGroups[i]);
-        }
+        let learningGroups = this.startedGroups.map(groups => groups.courseName == courseName);
         return learningGroups;
 
     }
-}
 
 }
